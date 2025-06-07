@@ -212,7 +212,7 @@ const ProductForm = ({ productData = {} }) => {
           padding: 2rem;
           background-color: white;
           border-radius: 10px;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 15px rgba(130, 103, 103, 0.1);
         }
         .form-title {
           text-align: center;

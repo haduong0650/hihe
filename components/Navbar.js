@@ -4,7 +4,7 @@ import Link from 'next/link';
 const Navbar = () => (
   <nav className="navbar">
     <Link href="/" className="navbar-brand">
-      EcomApp
+      WELCOME
     </Link>
     <div className="navbar-links">
       <Link href="/products/add" className="navbar-link">
@@ -17,8 +17,8 @@ const Navbar = () => (
         justify-content: space-between;
         align-items: center;
         padding: 1rem 2rem;
-        background-color: #a3d4f2;
-        color: #0288d1;
+        background-color:rgb(207, 130, 184);
+        color:rgb(29, 54, 68);
       }
       .navbar-brand {
         font-size: 1.5rem;

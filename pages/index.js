@@ -65,7 +65,7 @@ export default function Home() {
         .page-title {
           text-align: center;
           margin-bottom: 2rem;
-          color:rgb(207, 204, 115);
+          color:rgb(206, 54, 158);
         }
         .product-grid {
           display: grid;
@@ -73,7 +73,7 @@ export default function Home() {
           gap: 2rem;
         }
         .product-card {
-          background-color: #c6e7f8;
+          background-color:rgb(233, 130, 211);
           border-radius: 8px;
           box-shadow: 0 4px 12px rgba(109, 189, 218, 0.1);
           overflow: hidden;
