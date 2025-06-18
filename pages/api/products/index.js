@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   const { method } = req;
 
   const { user } = await supabase.auth.getUser(req.headers.authorization);
-  if (!user && method === 'POST') {
+  if (!user && (method === 'POST' || method === 'PUT' || method === 'DELETE')) {
     return res.status(401).json({ success: false, message: 'Unauthorized' });
   }
 
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
       break;
 
     default:
-      res.status(405).json({ success: false, message: 'Method ${method} Not Allowed' });
+      res.status(405).json({ success: false, message: `Method ${method} Not Allowed` });
       break;
   }
 }

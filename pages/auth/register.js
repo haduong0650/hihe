@@ -1,47 +1,34 @@
-// pages/auth/register.js
-import { useState } from 'react'
-import { supabase } from '../lib/supabase';
-import { useRouter } from 'next/router'
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import RegisterForm from '@/components/RegisterForm';
 
-export default function RegisterPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
+export default function Register() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const router = useRouter();
+  const supabase = createClientComponentClient();
 
   const handleRegister = async (e) => {
-    e.preventDefault()
-    setError(null)
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      setError(error.message);
-    } else {
-      alert('Vui lòng kiểm tra email của bạn để xác nhận!');
+    e.preventDefault();
+    try {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) throw error;
       router.push('/auth/login');
+    } catch (error) {
+      setError(error.message);
     }
-  }
+  };
 
   return (
-    <div style={{ padding: 40 }}>
-      <h2>Register</h2>
-      <form onSubmit={handleRegister}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        /><br /><br />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        /><br /><br />
-        <button type="submit">Sign Up</button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-      </form>
-    </div>
-  )
+    <RegisterForm
+      email={email}
+      password={password}
+      error={error}
+      onChangeEmail={(e) => setEmail(e.target.value)}
+      onChangePassword={(e) => setPassword(e.target.value)}
+      onSubmit={handleRegister}
+    />
+  );
 }

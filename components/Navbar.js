@@ -1,46 +1,67 @@
 // components/Navbar.js
 import Link from 'next/link';
+import { useSupabaseAuth } from '../lib/SupabaseAuthContext';
 
-const Navbar = () => (
-  <nav className="navbar">
-    <Link href="/" className="navbar-brand">
-      WELCOME
-    </Link>
-    <div className="navbar-links">
-      <Link href="/products/add" className="navbar-link">
-        Add Product
+const Navbar = () => {
+  const { user, logout } = useSupabaseAuth();
+
+  return (
+    <nav className="navbar">
+      <Link href="/" className="navbar-brand">
+        WELCOME
       </Link>
-    </div>
-    <style jsx>{`
-      .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 2rem;
-        background-color:rgb(207, 130, 184);
-        color:rgb(29, 54, 68);
-      }
-      .navbar-brand {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: white;
-        text-decoration: none;
-      }
-      .navbar-links {
-        display: flex;
-        gap: 1rem;
-      }
-      .navbar-link {
-        color: white;
-        text-decoration: none;
-        padding: 0.5rem 1rem;
-        border-radius: 5px;
-      }
-      .navbar-link:hover {
-        background-color: #555;
-      }
-    `}</style>
-  </nav>
-);
+      <div className="navbar-links">
+        {user ? (
+          <>
+            <Link href="/products/add" className="navbar-link">
+              Add Product
+            </Link>
+            <button onClick={logout} className="navbar-link" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link href="/auth/login" className="navbar-link">
+              Login
+            </Link>
+            <Link href="/auth/register" className="navbar-link">
+              Register
+            </Link>
+          </>
+        )}
+      </div>
+      <style jsx>{`
+        .navbar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1rem 2rem;
+          background-color:rgb(207, 130, 184);
+          color:rgb(29, 54, 68);
+        }
+        .navbar-brand {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: white;
+          text-decoration: none;
+        }
+        .navbar-links {
+          display: flex;
+          gap: 1rem;
+        }
+        .navbar-link {
+          color: white;
+          text-decoration: none;
+          padding: 0.5rem 1rem;
+          border-radius: 5px;
+        }
+        .navbar-link:hover {
+          background-color: #555;
+        }
+      `}</style>
+    </nav>
+  );
+};
 
 export default Navbar;

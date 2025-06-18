@@ -2,11 +2,13 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useSupabaseAuth } from '../lib/SupabaseAuthContext';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useSupabaseAuth();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -52,11 +54,13 @@ export default function Home() {
               <p className="product-price">${product.price.toFixed(2)}</p>
               <p className="product-description">{product.description.substring(0, 100)}...</p>
             </div>
-            <div className="product-actions">
-              <Link href={`/products/edit/${product._id}`} className="button edit-button">
-                Edit
-              </Link>
-            </div>
+            {user && (
+              <div className="product-actions">
+                <Link href={`/products/edit/${product._id}`} className="button edit-button">
+                  Edit
+                </Link>
+              </div>
+            )}
           </div>
         ))}
       </div>
