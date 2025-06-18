@@ -12,11 +12,16 @@ export default function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault()
     setError(null)
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      setError(error.message)
+      setError(error.message);
     } else {
-      router.push('/')
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        router.push('/');
+      } else {
+        setError('Đăng nhập thất bại, vui lòng thử lại.');
+      }
     }
   }
 
