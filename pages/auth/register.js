@@ -12,12 +12,12 @@ export default function RegisterPage() {
   const handleRegister = async (e) => {
     e.preventDefault()
     setError(null)
-    const { data, error } = await supabase.auth.signUp({ email, password })
+    const { error } = await supabase.auth.signUp({ email, password });
     if (error) {
-      setError(error.message)
+      setError(error.message);
     } else {
-      alert('Check your email for verification!')
-      router.push('/auth/login')
+      alert('Vui lòng kiểm tra email của bạn để xác nhận!');
+      router.push('/auth/login');
     }
   }
 
