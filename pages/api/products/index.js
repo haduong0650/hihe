@@ -1,5 +1,6 @@
 // pages/api/products/index.js
-import connectDB from '../../../lib/mongodb';
+
+import { supabase } from '../../../lib/supabase';
 import Product from '../../../models/Product';
 
 export default async function handler(req, res) {
