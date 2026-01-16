@@ -1,23 +1,26 @@
 // pages/api/products/[id].js
-import connectDB from '../../../lib/mongodb'; // <--- Thay đổi import ở đây
-import Product from '../../../models/Product';
+import { supabase } from '../../../lib/supabase';
 
 export default async function handler(req, res) {
-  await connectDB(); // <--- Gọi hàm kết nối ở đây
-
   const {
     query: { id },
     method,
   } = req;
 
+  const { user } = await supabase.auth.getUser(req.headers.authorization);
+  if (!user && (method === 'PUT' || method === 'DELETE')) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
+
   switch (method) {
     case 'GET':
       try {
-        const product = await Product.findById(id);
-        if (!product) {
+        const { data, error } = await supabase.from('products').select('*').eq('id', id);
+        if (error) throw error;
+        if (!data || data.length === 0) {
           return res.status(404).json({ success: false, message: 'Product not found' });
         }
-        res.status(200).json({ success: true, data: product });
+        res.status(200).json({ success: true, data: data[0] });
       } catch (error) {
         res.status(400).json({ success: false, message: error.message });
       }
@@ -25,37 +28,34 @@ export default async function handler(req, res) {
 
     case 'PUT':
       try {
-        const product = await Product.findByIdAndUpdate(id, req.body, {
-          new: true,
-          runValidators: true,
-        });
-        if (!product) {
+        const { ...updates } = req.body;
+        const { data, error } = await supabase
+          .from('products')
+          .update(updates)
+          .eq('id', id)
+          .select();
+        if (error) throw error;
+        if (!data || data.length === 0) {
           return res.status(404).json({ success: false, message: 'Product not found' });
         }
-        res.status(200).json({ success: true, data: product });
+        res.status(200).json({ success: true, data: data[0] });
       } catch (error) {
-        if (error.name === 'ValidationError') {
-            const messages = Object.values(error.errors).map(val => val.message);
-            return res.status(400).json({ success: false, message: messages.join(', ') });
-        }
         res.status(400).json({ success: false, message: error.message });
       }
       break;
 
     case 'DELETE':
       try {
-        const deletedProduct = await Product.deleteOne({ _id: id });
-        if (!deletedProduct.deletedCount) {
-          return res.status(404).json({ success: false, message: 'Product not found' });
-        }
+        const { error } = await supabase.from('products').delete().eq('id', id);
+        if (error) throw error;
         res.status(200).json({ success: true, data: {} });
       } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        res.status(400).json({ success: false, message: error.message || 'Product not found' });
       }
       break;
 
     default:
-      res.status(405).json({ success: false, message: `Method ${method} Not Allowed` });
+      res.status(405).json({ success: false, message: 'Method ${method} Not Allowed'});
       break;
   }
 }
